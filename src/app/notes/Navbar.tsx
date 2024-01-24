@@ -1,6 +1,6 @@
 "use client";
 
-import AddNote from "@/components/AddNote";
+import AddEditNote from "@/components/AddEditNote";
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
@@ -32,7 +32,7 @@ function Navbar() {
           </div>
         </div>
       </div>
-      <AddNote open={showDialog} setOpen={setShowDialog} />
+      <AddEditNote open={showDialog} setOpen={setShowDialog} />
     </>
   );
 }
