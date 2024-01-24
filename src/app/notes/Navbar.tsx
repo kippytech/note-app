@@ -8,7 +8,7 @@ import React from "react";
 function Navbar() {
   return (
     <div className="p-4 shadow">
-      <div className="justify-betweenmax-w-7xl mx-auto flex flex-wrap items-center gap-3">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
         <Link href="/notes" className="flex items-center gap-1">
           <Image src="/brainy.png" alt="brainy logo" height={40} width={40} />
           <span className="font-bold">brainy</span>
