@@ -2,7 +2,7 @@ import {
   CreateNoteSchema,
   createNoteSchema,
 } from "@/lib/validation/noteValidator";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -33,6 +33,8 @@ interface AddEditNoteProps {
 }
 
 function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const router = useRouter();
 
   const form = useForm<CreateNoteSchema>({
@@ -73,11 +75,34 @@ function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
     }
   };
 
+  const deleteNote = async () => {
+    if (!noteToEdit) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/notes", {
+        method: "DELETE",
+        body: JSON.stringify({
+          id: noteToEdit.id,
+        }),
+      });
+
+      if (!res.ok) throw Error("Status code: " + res.status);
+      router.refresh();
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Note</DialogTitle>
+          <DialogTitle>{noteToEdit ? "Edit Note" : "Add Note"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
@@ -107,8 +132,23 @@ function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
               control={form.control}
               name="content"
             />
-            <DialogFooter>
-              <SubmitButton type="submit" loading={form.formState.isSubmitting}>
+            <DialogFooter className="gap-1 sm:gap-0">
+              {noteToEdit && (
+                <SubmitButton
+                  onClick={deleteNote}
+                  type="button"
+                  variant="destructive"
+                  loading={isDeleting}
+                  disabled={form.formState.isSubmitting}
+                >
+                  Delete
+                </SubmitButton>
+              )}
+              <SubmitButton
+                type="submit"
+                loading={form.formState.isSubmitting}
+                disabled={isDeleting}
+              >
                 Submit
               </SubmitButton>
             </DialogFooter>
