@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs";
 
 export async function POST(req: Request) {
   try {
-    const body = req.json();
+    const body = await req.json();
 
     const parseResult = createNoteSchema.safeParse(body);
 
