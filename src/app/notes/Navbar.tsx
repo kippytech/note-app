@@ -1,15 +1,19 @@
 "use client";
 
 import AddEditNote from "@/components/AddEditNote";
+import ThemeToggleBtn from "@/components/ThemeToggleBtn";
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import { dark } from "@clerk/themes";
+import { useState } from "react";
 
 function Navbar() {
   const [showDialog, setShowDialog] = useState(false);
+  const { theme } = useTheme();
   return (
     <>
       <div className="p-4 shadow">
@@ -23,10 +27,12 @@ function Navbar() {
               <Plus size={20} className="mr-2" />
               Add note
             </Button>
+            <ThemeToggleBtn />
             <UserButton
               afterSignOutUrl="/"
               appearance={{
                 elements: { avatarBox: { width: "2.5rem", height: "2.5rem" } },
+                baseTheme: theme === "dark" ? dark : undefined,
               }}
             />
           </div>
