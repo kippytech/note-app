@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { dark } from "@clerk/themes";
 import { useState } from "react";
+import ChatButton from "@/components/ChatButton";
 
 function Navbar() {
   const [showDialog, setShowDialog] = useState(false);
@@ -27,6 +28,7 @@ function Navbar() {
               <Plus size={20} className="mr-2" />
               Add note
             </Button>
+            <ChatButton />
             <ThemeToggleBtn />
             <UserButton
               afterSignOutUrl="/"
