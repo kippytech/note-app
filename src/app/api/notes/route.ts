@@ -31,25 +31,28 @@ export async function POST(req: Request) {
     //then first ensure a note has an embedding b4 creating note in mongodb
     //also if mongodb operation fails no entry creation in pinecone
     //all transcations in tx client rolled back if any fails (start with mongodb b4 pinecone)
-    const note = await prisma.$transaction(async (tx) => {
-      const note = await tx.note.create({
-        data: {
-          title: title,
-          content: content,
-          userId,
-        },
-      });
+    const note = await prisma.$transaction(
+      async (tx) => {
+        const note = await tx.note.create({
+          data: {
+            title: title,
+            content: content,
+            userId,
+          },
+        });
 
-      await notesIndex.upsert([
-        {
-          id: note.id,
-          values: embedding,
-          metadata: { userId },
-        },
-      ]);
+        await notesIndex.upsert([
+          {
+            id: note.id,
+            values: embedding,
+            metadata: { userId },
+          },
+        ]);
 
-      return note;
-    });
+        return note;
+      },
+      { timeout: 20000 },
+    );
 
     return Response.json({ note }, { status: 201 });
   } catch (error) {

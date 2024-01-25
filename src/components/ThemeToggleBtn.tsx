@@ -19,8 +19,8 @@ function ThemeToggleBtn() {
         }
       }}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] translate-x-2 scale-0 transition-all dark:scale-100" />
-      <Moon className="h-[1.2rem] w-[1.2rem] -translate-x-2 scale-100 transition-all dark:scale-0" />
+      <Sun className="delay-3000 h-[1.2rem] w-[1.2rem] translate-x-2 scale-0 transition-all dark:scale-100" />
+      <Moon className="delay-3000 h-[1.2rem] w-[1.2rem] -translate-x-2 scale-100 transition-all dark:scale-0" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );
