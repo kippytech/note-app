@@ -4,16 +4,26 @@ import { notesIndex } from "@/lib/vectordb";
 import { auth } from "@clerk/nextjs";
 import { ChatCompletionMessage } from "openai/resources/index.mjs";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import {
+  ChatCompletionRequestMessage,
+  Configuration,
+  OpenAIApi,
+} from "openai-edge";
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge";
+
+const config = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const openai2 = new OpenAIApi(config);
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const messages: ChatCompletionMessage[] = body.messages;
+    const messages: ChatCompletionRequestMessage[] = body.messages;
+    // const messages: ChatCompletionMessage[] = body.messages;
 
     const truncatedMessages = messages.slice(-6);
 
@@ -37,7 +47,7 @@ export async function POST(req: Request) {
       },
     });
 
-    const systemMessage: ChatCompletionMessage = {
+    const systemMessage: ChatCompletionRequestMessage = {
       role: "assistant",
       content:
         "You are an intelligent note-taking app. You answer the users's question based on their existing notes. " +
@@ -46,13 +56,28 @@ export async function POST(req: Request) {
           .map((note) => `Title: ${note.title}\n\nContent: ${note.content}`)
           .join("\n\n"),
     };
+    // const systemMessage: ChatCompletionMessage = {
+    //   role: "assistant",
+    //   content:
+    //     "You are an intelligent note-taking app. You answer the users's question based on their existing notes. " +
+    //     "The relevant notes for this query are:\n" +
+    //     relevantNotes
+    //       .map((note) => `Title: ${note.title}\n\nContent: ${note.content}`)
+    //       .join("\n\n"),
+    // };
 
-    const res = await openai.chat.completions.create({
+    const res = await openai2.createChatCompletion({
       model: "gpt-3.5-turbo",
       temperature: 0,
       stream: true,
       messages: [systemMessage, ...truncatedMessages],
     });
+    // const res = await openai.chat.completions.create({
+    //   model: "gpt-3.5-turbo",
+    //   temperature: 0,
+    //   stream: true,
+    //   messages: [systemMessage, ...truncatedMessages],
+    // });
 
     const stream = OpenAIStream(res);
 
