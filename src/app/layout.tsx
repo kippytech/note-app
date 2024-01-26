@@ -22,8 +22,10 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <ThemeProvider attribute="class">
-            <main className="flex-grow">{children}</main>
-            <Footer />
+            <div className="flex min-h-screen flex-col gap-4">
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
           </ThemeProvider>
         </body>
       </html>
