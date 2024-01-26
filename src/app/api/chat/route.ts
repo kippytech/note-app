@@ -2,7 +2,7 @@ import prisma from "@/lib/db/prisma";
 import openai, { getEmbedding } from "@/lib/openai";
 import { notesIndex } from "@/lib/vectordb";
 import { auth } from "@clerk/nextjs";
-import { ChatCompletionMessage } from "openai/resources/index.mjs";
+//import { ChatCompletionMessage } from "openai/resources/index.mjs";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import {
   ChatCompletionRequestMessage,
