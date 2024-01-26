@@ -21,7 +21,7 @@ function Navbar() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <Link href="/notes" className="flex items-center gap-1">
             <Image src="/logo.png" alt="brainy logo" height={40} width={40} />
-            <span className="font-bold">brainy</span>
+            <span className="font-bold italic">brainy</span>
           </Link>
           <div className="flex items-center gap-2">
             <Button onClick={() => setShowDialog(true)}>
