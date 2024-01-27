@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "./ThemeProvider";
 import Footer from "@/components/Footer";
+import QueryProvider from "@/components/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,16 +20,18 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <ThemeProvider attribute="class">
-            <div className="flex min-h-screen flex-col gap-4">
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
-          </ThemeProvider>
-        </body>
-      </html>
+      <QueryProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <ThemeProvider attribute="class">
+              <div className="flex min-h-screen flex-col gap-4">
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </div>
+            </ThemeProvider>
+          </body>
+        </html>
+      </QueryProvider>
     </ClerkProvider>
   );
 }

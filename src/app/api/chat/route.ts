@@ -79,7 +79,29 @@ export async function POST(req: Request) {
     //   messages: [systemMessage, ...truncatedMessages],
     // });
 
-    const stream = OpenAIStream(res);
+    // const stream = OpenAIStream(res);
+    const stream = OpenAIStream(res, {
+      //save user message to db for chat log persistency
+      onStart: async () => {
+        await prisma.message.create({
+          data: {
+            text: messages[messages.length - 1].content!,
+            isUserMessage: true,
+            userId,
+          },
+        });
+      },
+      //save ai messages for persistency too
+      async onCompletion(completion) {
+        await prisma.message.create({
+          data: {
+            text: completion,
+            isUserMessage: false,
+            userId,
+          },
+        });
+      },
+    });
 
     return new StreamingTextResponse(stream);
   } catch (error) {
