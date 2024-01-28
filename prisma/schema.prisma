@@ -7,14 +7,15 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("DB_URL")
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Note {
   id String @id @default(auto())@map("_id") @db.ObjectId
   title String
   content String?
-  userId String? @db.ObjectId
+  userId String? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -30,11 +31,11 @@ model Message {
   updatedAt DateTime @updatedAt
 
   author User? @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  userId String? 
 }
 
 model User {
-  id String @id @map("_id") @db.ObjectId //id matches clerk userId
+  id String @id @map("_id")  //id matches clerk userId
   email String @unique
 
   notes Note[]
