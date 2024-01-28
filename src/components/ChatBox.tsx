@@ -65,11 +65,15 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
           {messages.map((mssg) => (
             <ChatMessage message={mssg} key={mssg.id} />
           ))}
-          {isLoading && isLoadingPrevMssgs && lastMessageIsUser && (
-            <ChatMessage
-              message={{ role: "assistant", content: "Brainy is thinking..." }}
-            />
-          )}
+          {isLoading ||
+            (isLoadingPrevMssgs && lastMessageIsUser && (
+              <ChatMessage
+                message={{
+                  role: "assistant",
+                  content: "Brainy is thinking...",
+                }}
+              />
+            ))}
           {error && (
             <ChatMessage
               message={{
