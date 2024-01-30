@@ -20,10 +20,7 @@ model Note {
   updatedAt DateTime @updatedAt
 
   author User? @relation(fields: [userId], references: [id])
-<<<<<<< HEAD
-=======
   
->>>>>>> e623c539c03ec9aa5a916fa2fd932718eb9c914b
 }
 
 model Message {

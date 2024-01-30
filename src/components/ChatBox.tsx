@@ -31,7 +31,7 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
     handleSubmit,
     isLoading,
     error,
-  } = useChat({ initialMessages: data.text || [] });
+  } = useChat({ initialMessages: data || [] });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
