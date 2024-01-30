@@ -33,8 +33,6 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
     error,
   } = useChat({ initialMessages: data || [] });
 
-  console.log(data);
-
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -67,11 +65,15 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
           {messages.map((mssg) => (
             <ChatMessage message={mssg} key={mssg.id} />
           ))}
-          {isLoading && lastMessageIsUser && (
-            <ChatMessage
-              message={{ role: "assistant", content: "Brainy is thinking..." }}
-            />
-          )}
+          {isLoading ||
+            (isLoadingPrevMssgs && lastMessageIsUser && (
+              <ChatMessage
+                message={{
+                  role: "assistant",
+                  content: "Brainy is thinking...",
+                }}
+              />
+            ))}
           {error && (
             <ChatMessage
               message={{

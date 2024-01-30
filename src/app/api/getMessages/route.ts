@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db/prisma";
 
-//export const runtime = "edge";
+export const runtime = "edge";
 
 export async function GET() {
   // const body = await req.json()
@@ -13,7 +13,7 @@ export async function GET() {
 
   const messages = await prisma.message.findMany({
     where: {
-      OR: [{ userId }, { isUserMessage: false }],
+      userId: userId,
     },
   });
 
