@@ -7,6 +7,8 @@ import { Message } from "ai";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 interface ChatBoxProps {
   open: boolean;
@@ -14,6 +16,13 @@ interface ChatBoxProps {
 }
 
 export default function ChatBox({ open, onClose }: ChatBoxProps) {
+  const { data, isLoading: isLoadingPrevMssgs } = useQuery({
+    queryKey: ["chatMssg"],
+    queryFn: async () => {
+      const res = await axios.get("/api/getMessages");
+      return res.data;
+    },
+  });
   const {
     messages,
     setMessages,
@@ -22,7 +31,9 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
     handleSubmit,
     isLoading,
     error,
-  } = useChat();
+  } = useChat({ initialMessages: data || [] });
+
+  console.log(data);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
