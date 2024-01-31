@@ -57,10 +57,13 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
         open ? "fixed" : "hidden",
       )}
     >
-      <button onClick={onClose} className="z-20 mx-auto mb-1 block">
+      <button onClick={onClose} className="mx-auto mb-1 hidden md:block">
         <XCircle size={30} />
       </button>
       <div className="flex h-[calc(100vh-4rem)] flex-col rounded border-2 bg-background shadow-xl">
+        <button onClick={onClose} className="mx-auto mb-1 block md:hidden">
+          <XCircle size={30} />
+        </button>
         <div className="h-full overflow-y-auto px-3" ref={scrollRef}>
           {messages.map((mssg) => (
             <ChatMessage message={mssg} key={mssg.id} />
