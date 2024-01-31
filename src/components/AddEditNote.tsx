@@ -58,6 +58,9 @@ function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
         });
 
         if (!res.ok) throw Error("Status code: " + res.status);
+
+        form.reset()
+        router.refresh()
       } else {
         const res = await fetch("/api/notes2", {
           method: "POST",
