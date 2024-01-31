@@ -1,7 +1,7 @@
 import Note from "@/components/Note";
 import { db } from "@/lib/db";
 import { notes } from "@/lib/db/schema";
-import prisma from "@/lib/db/prisma";
+//import prisma from "@/lib/db/prisma";
 import { auth } from "@clerk/nextjs";
 import { Ghost } from "lucide-react";
 import { Metadata } from "next";
