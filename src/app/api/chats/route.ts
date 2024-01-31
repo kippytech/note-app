@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import prisma from "@/lib/db/prisma";
+//import prisma from "@/lib/db/prisma";
 import { Note, notes } from "@/lib/db/schema";
 import openai, { getEmbedding } from "@/lib/openai";
 import { notesIndex } from "@/lib/vectordb";
