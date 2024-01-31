@@ -24,7 +24,8 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import SubmitButton from "./ui/submitButton";
 import { useRouter } from "next/navigation";
-import { Note } from "@prisma/client";
+import { Note } from "@/lib/db/schema";
+//import { Note } from "@prisma/client";
 
 interface AddEditNoteProps {
   open: boolean;
@@ -48,7 +49,7 @@ function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
   const onSubmit = async (input: CreateNoteSchema) => {
     try {
       if (noteToEdit) {
-        const res = await fetch("/api/notes", {
+        const res = await fetch("/api/notes2", {
           method: "PUT",
           body: JSON.stringify({
             ...input,
@@ -58,12 +59,13 @@ function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
 
         if (!res.ok) throw Error("Status code: " + res.status);
       } else {
-        const res = await fetch("/api/notes", {
+        const res = await fetch("/api/notes2", {
           method: "POST",
           body: JSON.stringify(input),
         });
 
         if (!res.ok) throw Error("Status code: " + res.status);
+        console.log(res);
 
         form.reset();
       }
@@ -80,7 +82,7 @@ function AddEditNote({ open, setOpen, noteToEdit }: AddEditNoteProps) {
 
     setIsDeleting(true);
     try {
-      const res = await fetch("/api/notes", {
+      const res = await fetch("/api/notes2", {
         method: "DELETE",
         body: JSON.stringify({
           id: noteToEdit.id,

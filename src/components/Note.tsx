@@ -1,6 +1,6 @@
 "use client";
 
-import { Note } from "@prisma/client";
+//import { Note } from "@prisma/client";
 import {
   Card,
   CardContent,
@@ -10,6 +10,7 @@ import {
 } from "./ui/card";
 import { useState } from "react";
 import AddEditNote from "./AddEditNote";
+import { Note } from "@/lib/db/schema";
 
 interface NoteProps {
   note: Note;
