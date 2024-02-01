@@ -19,7 +19,7 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
   const { data, isLoading: isLoadingPrevMssgs } = useQuery({
     queryKey: ["chatMssg"],
     queryFn: async () => {
-      const res = await axios.get("/api/getMessages");
+      const res = await axios.get<Message[]>("/api/getMessages");
       return res.data;
     },
   });
@@ -31,7 +31,7 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
     handleSubmit,
     isLoading,
     error,
-  } = useChat({ api: "/api/chats" });
+  } = useChat({ api: "/api/chats", initialMessages: data || [] });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, data, open]);
 
   useEffect(() => {
     if (open) {
@@ -68,15 +68,14 @@ export default function ChatBox({ open, onClose }: ChatBoxProps) {
           {messages.map((mssg) => (
             <ChatMessage message={mssg} key={mssg.id} />
           ))}
-          {isLoading ||
-            (isLoadingPrevMssgs && lastMessageIsUser && (
-              <ChatMessage
-                message={{
-                  role: "assistant",
-                  content: "Brainy is thinking...",
-                }}
-              />
-            ))}
+          {(isLoading || isLoadingPrevMssgs) && lastMessageIsUser && (
+            <ChatMessage
+              message={{
+                role: "assistant",
+                content: "Brainy is thinking...",
+              }}
+            />
+          )}
           {error && (
             <ChatMessage
               message={{

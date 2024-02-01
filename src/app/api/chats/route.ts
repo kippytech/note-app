@@ -1,6 +1,11 @@
 import { db } from "@/lib/db";
 //import prisma from "@/lib/db/prisma";
-import { Note, notes } from "@/lib/db/schema";
+import {
+  Note,
+  notes,
+  messages as _messages,
+  MessageSchema,
+} from "@/lib/db/schema";
 import openai, { getEmbedding } from "@/lib/openai";
 import { notesIndex } from "@/lib/vectordb";
 import { auth } from "@clerk/nextjs";
@@ -28,7 +33,9 @@ export async function POST(req: Request) {
     const messages: ChatCompletionRequestMessage[] = body.messages;
     // const messages: ChatCompletionMessage[] = body.messages;
 
-    const truncatedMessages = messages.slice(-6);
+    const lastMessage = messages[messages.length - 1];
+
+    const truncatedMessages = messages.slice(-12);
 
     const embedding = await getEmbedding(
       truncatedMessages.map((mssg) => mssg.content).join("\n"),
@@ -36,9 +43,12 @@ export async function POST(req: Request) {
 
     const { userId } = auth();
 
+    if (!userId)
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+
     const vectorQueryResponse = await notesIndex.query({
       vector: embedding,
-      topK: 4,
+      topK: 10,
       filter: { userId },
     });
 
@@ -59,17 +69,8 @@ export async function POST(req: Request) {
       .from(notes)
       .where(inArray(notes.id, vectorId));
 
-    // const relevantNotes = mappedNotes.map((note: any) => ({
-    //   id: note.id,
-    //   userId: note.userId,
-    //   createdAt: note.createdAt,
-    //   updatedAt: note.updatedAt,
-    //   title: note.title,
-    //   content: note.content,
-    // }));
-
     const systemMessage: ChatCompletionRequestMessage = {
-      role: "assistant",
+      role: "system",
       content:
         "You are an intelligent note-taking app. You answer the users's question based on their existing notes. " +
         "The relevant notes for this query are:\n" +
@@ -101,28 +102,24 @@ export async function POST(req: Request) {
     // });
 
     // const stream = OpenAIStream(res);
-    const stream = OpenAIStream(res); //, {
-    //save user message to db for chat log persistency
-    //   onStart: async () => {
-    //     await prisma.message.create({
-    //       data: {
-    //         text: messages[messages.length - 1].content!,
-    //         isUserMessage: true,
-    //         userId,
-    //       },
-    //     });
-    //   },
-    //   //save ai messages for persistency too
-    //   async onCompletion(completion) {
-    //     await prisma.message.create({
-    //       data: {
-    //         text: completion,
-    //         isUserMessage: false,
-    //         userId,
-    //       },
-    //     });
-    //   },
-    // });
+    const stream = OpenAIStream(res, {
+      //save user message to db for chat log persistency
+      onStart: async () => {
+        await db.insert(_messages).values({
+          userId: userId,
+          content: lastMessage.content!,
+          role: "user",
+        });
+      },
+      //save ai messages for persistency too
+      async onCompletion(completion) {
+        await db.insert(_messages).values({
+          userId: userId,
+          content: completion,
+          role: "system",
+        });
+      },
+    });
 
     return new StreamingTextResponse(stream);
   } catch (error) {

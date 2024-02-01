@@ -41,15 +41,17 @@ export const notes = pgTable("notes", {
 
 export type Note = typeof notes.$inferSelect;
 
-// export const messages = pgTable("messages", {
-//   id: serial("id").primaryKey().notNull(),
-//id: varchar("userId", { length: 256 }).notNull(),
-//   text: text("text"),
-//   createdAt: timestamp("createdAt").notNull().defaultNow(),
-//   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
-//   userId: varchar("userId", { length: 256 }).notNull(),
-//   role: userSystemEnum("role").notNull(),
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey().notNull(),
+  //id: varchar("userId", { length: 256 }).notNull(),
+  content: text("text").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  //updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+  userId: varchar("userId", { length: 256 }),
+  role: userSystemEnum("role").notNull(),
+});
 //   userId: varchar("userId", { length: 256 })
 //     .references(() => users.id)
 //     .notNull(),
 //});
+export type MessageSchema = typeof messages.$inferSelect;
